@@ -186,7 +186,9 @@ jobs:
           SUMMARY_COMMENT_URL: ${{ needs.review.outputs.summary_comment_url }}
         with:
           script: |
-            const match = /\/issues\/comments\/(\d+)$/.exec(process.env.SUMMARY_COMMENT_URL);
+            const match = /(?:\/issues\/comments\/|#issuecomment-)(\d+)$/.exec(
+              process.env.SUMMARY_COMMENT_URL
+            );
             if (!match) {
               core.warning('OpenCodeReview did not return a recognizable summary comment URL.');
               return;
