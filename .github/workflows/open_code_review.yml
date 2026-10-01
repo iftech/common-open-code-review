@@ -146,9 +146,15 @@ jobs:
           ' "$RULE_SOURCE/rule.json" > "$rules_dir/rule.json"
           echo "path=$rules_dir/rule.json" >> "$GITHUB_OUTPUT"
 
+      - name: Record review start time
+        id: review_started
+        shell: bash
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       # Do not pin this reference or set ocr_version: both intentionally track
       # the newest OpenCodeReview action and CLI release.
       - name: Review with OpenCodeReview
+        id: ocr
         uses: alibaba/open-code-review@main
         with:
           sticky_summary: 'false'
@@ -161,3 +167,44 @@ jobs:
           base_ref: ${{ steps.pr.outputs.base_ref }}
           head_sha: ${{ steps.pr.outputs.head_sha }}
           rule: ${{ steps.rules.outputs.path }}
+
+      - name: Add review metadata to summary
+        if: ${{ success() && steps.ocr.outputs.summary_comment_url != '' }}
+        uses: actions/github-script@v7
+        continue-on-error: true
+        env:
+          MODEL: ${{ steps.pr.outputs.model }}
+          REVIEW_STARTED_AT: ${{ steps.review_started.outputs.epoch }}
+          SUMMARY_COMMENT_URL: ${{ steps.ocr.outputs.summary_comment_url }}
+        with:
+          script: |
+            const match = /\/issues\/comments\/(\d+)$/.exec(process.env.SUMMARY_COMMENT_URL);
+            if (!match) {
+              core.warning('OpenCodeReview did not return a recognizable summary comment URL.');
+              return;
+            }
+
+            const { data: comment } = await github.rest.issues.getComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: Number(match[1]),
+            });
+            const marker = '<!-- common-open-code-review:model -->';
+            const startedAt = Number(process.env.REVIEW_STARTED_AT);
+            const elapsedSeconds = Number.isFinite(startedAt)
+              ? Math.max(0, Math.floor(Date.now() / 1000) - startedAt)
+              : null;
+            const duration = elapsedSeconds === null
+              ? 'unknown'
+              : elapsedSeconds >= 60
+                ? `${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`
+                : `${elapsedSeconds}s`;
+            const modelLine = `${marker}\n_Model: \`${process.env.MODEL}\`_\n_Review generated in: ${duration}_`;
+            const body = (comment.body || '').split(marker, 1)[0].trimEnd();
+
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: Number(match[1]),
+              body: `${body}\n\n${modelLine}`,
+            });
