@@ -165,6 +165,8 @@ jobs:
       - name: Review with OpenCodeReview
         uses: alibaba/open-code-review@main
         with:
+          sticky_summary: 'false'
+          incremental: 'true'
           llm_url: ${{ steps.pr.outputs.llm_url }}
           llm_auth_token: ${{ secrets[steps.pr.outputs.llm_auth_secret] }}
           llm_model: ${{ steps.pr.outputs.model }}
