@@ -15,6 +15,10 @@ permissions:
 
 jobs:
   review:
+    outputs:
+      model: ${{ steps.pr.outputs.model }}
+      review_started_at: ${{ steps.review_started.outputs.epoch }}
+      summary_comment_url: ${{ steps.ocr.outputs.summary_comment_url }}
     if: >-
       github.event.issue.pull_request
       && github.event.comment.user.type != 'Bot'
@@ -168,14 +172,18 @@ jobs:
           head_sha: ${{ steps.pr.outputs.head_sha }}
           rule: ${{ steps.rules.outputs.path }}
 
+  add_review_metadata:
+    needs: review
+    if: needs.review.outputs.summary_comment_url != ''
+    runs-on: ubuntu-latest
+    steps:
       - name: Add review metadata to summary
-        if: ${{ success() && steps.ocr.outputs.summary_comment_url != '' }}
         uses: actions/github-script@v7
         continue-on-error: true
         env:
-          MODEL: ${{ steps.pr.outputs.model }}
-          REVIEW_STARTED_AT: ${{ steps.review_started.outputs.epoch }}
-          SUMMARY_COMMENT_URL: ${{ steps.ocr.outputs.summary_comment_url }}
+          MODEL: ${{ needs.review.outputs.model }}
+          REVIEW_STARTED_AT: ${{ needs.review.outputs.review_started_at }}
+          SUMMARY_COMMENT_URL: ${{ needs.review.outputs.summary_comment_url }}
         with:
           script: |
             const match = /\/issues\/comments\/(\d+)$/.exec(process.env.SUMMARY_COMMENT_URL);
