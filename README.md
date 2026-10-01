@@ -20,8 +20,8 @@ the generated JSON is not committed.
 
 GitHub requires the `issue_comment` event trigger to be declared by each
 consumer. Everything after that trigger is shared, including `/review` model
-selection, the authorized-user list, concurrency, the acknowledgement reaction,
-and the review action. Consumers need only:
+selection, the authorized-user list, the acknowledgement reaction, and the
+review action. Consumers need only:
 
 ```yaml
 name: Open Code Review

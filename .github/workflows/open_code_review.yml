@@ -8,20 +8,6 @@ on:
       QWEN_API_KEY:
         required: false
 
-# A newer authorized /review command supersedes a review that is still running.
-# Other comments get unique groups, so they cannot cancel a PR review.
-concurrency:
-  group: >-
-    ${{
-      github.event.issue.pull_request
-      && github.event.comment.user.type != 'Bot'
-      && contains(fromJSON('["gmelodie","vladopajic","richard-ramos"]'), github.event.comment.user.login)
-      && (github.event.comment.body == '/review' || startsWith(github.event.comment.body, '/review '))
-      && format('ocr-pr-{0}', github.event.issue.number)
-      || format('ocr-noop-{0}', github.run_id)
-    }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
   issues: write
