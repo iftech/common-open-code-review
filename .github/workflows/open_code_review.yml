@@ -18,7 +18,7 @@ jobs:
     if: >-
       github.event.issue.pull_request
       && github.event.comment.user.type != 'Bot'
-      && contains(fromJSON('["gmelodie","vladopajic","richard-ramos"]'), github.event.comment.user.login)
+      && contains(fromJSON('["gmelodie","vladopajic","richard-ramos","albertosoutullo"]'), github.event.comment.user.login)
       && (github.event.comment.body == '/review' || startsWith(github.event.comment.body, '/review '))
     runs-on: ubuntu-latest
     timeout-minutes: 60
