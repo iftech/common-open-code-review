@@ -58,9 +58,9 @@ jobs:
             };
 
             const models = {
-              pro: { id: 'deepseek-v4-pro', provider: 'deepseek' },
-              flash: { id: 'deepseek-flash', provider: 'deepseek' },
+              flash: { id: 'qwen3.8-flash', provider: 'qwen' },
               max: { id: 'qwen3.8-max', provider: 'qwen' },
+              pro: { id: 'deepseek-v4-pro', provider: 'deepseek' },
               // DeepSeek
               'deepseek-pro': { id: 'deepseek-v4-pro', provider: 'deepseek' },
               'deepseek-flash': { id: 'deepseek-flash', provider: 'deepseek' },
@@ -71,9 +71,10 @@ jobs:
             };
 
             try {
+              const defaultModel = 'max';
               const command = context.payload.comment.body.trim();
               const match = /^\/review(?: +([A-Za-z0-9._-]+))?$/i.exec(command);
-              const requestedModel = match && (match[1] || 'pro').toLowerCase();
+              const requestedModel = match && (match[1] || defaultModel).toLowerCase();
               const model = requestedModel && models[requestedModel];
               if (!model) {
                 throw new Error(
