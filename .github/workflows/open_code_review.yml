@@ -60,14 +60,18 @@ jobs:
             const models = {
               flash: { id: 'qwen3.8-flash', provider: 'qwen' },
               max: { id: 'qwen3.8-max', provider: 'qwen' },
-              pro: { id: 'deepseek-v4-pro', provider: 'deepseek' },
+              
               // DeepSeek
-              'deepseek-pro': { id: 'deepseek-v4-pro', provider: 'deepseek' },
+              'deepseek-pro': { id: 'deepseek-v4-pro-0813', provider: 'qwen' },
               'deepseek-flash': { id: 'deepseek-flash', provider: 'deepseek' },
+              
               // Qwen
               'qwen-max': { id: 'qwen3.8-max', provider: 'qwen' },
               'qwen-flash': { id: 'qwen3.8-flash', provider: 'qwen' },
               'qwen-plus': { id: 'qwen3.7-plus', provider: 'qwen' },
+              
+              // Zipu
+              'glm': { id: 'glm-5.3', provider: 'qwen' },
             };
 
             try {
