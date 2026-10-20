@@ -25,7 +25,6 @@ jobs:
       && contains(fromJSON('["gmelodie","vladopajic","richard-ramos","albertosoutullo"]'), github.event.comment.user.login)
       && (github.event.comment.body == '/review' || startsWith(github.event.comment.body, '/review '))
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     steps:
       - name: Acknowledge review command
         uses: actions/github-script@v7
@@ -168,6 +167,7 @@ jobs:
         with:
           sticky_summary: 'false'
           incremental: 'true'
+          review_task_timeout: '45'
           llm_url: ${{ steps.pr.outputs.llm_url }}
           llm_auth_token: ${{ secrets[steps.pr.outputs.llm_auth_secret] }}
           llm_model: ${{ steps.pr.outputs.model }}
