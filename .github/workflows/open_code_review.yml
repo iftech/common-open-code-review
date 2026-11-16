@@ -65,9 +65,8 @@ jobs:
               'deepseek-flash': { id: 'deepseek-flash', provider: 'deepseek' },
               
               // Qwen
-              'qwen-max': { id: 'qwen3.8-max', provider: 'qwen' },
-              'qwen-flash': { id: 'qwen3.8-flash', provider: 'qwen' },
-              'qwen-plus': { id: 'qwen3.7-plus', provider: 'qwen' },
+              'qwen-max': { id: 'qwen4-max', provider: 'qwen' },
+              'qwen-flash': { id: 'qwen4-flash', provider: 'qwen' },
               
               // Zipu
               'glm': { id: 'glm-5.3', provider: 'qwen' },
