@@ -57,8 +57,8 @@ jobs:
             };
 
             const models = {
-              flash: { id: 'qwen3.8-flash', provider: 'qwen' },
-              max: { id: 'qwen3.8-max', provider: 'qwen' },
+              flash: { id: 'qwen4-flash', provider: 'qwen' },
+              max: { id: 'qwen4-max', provider: 'qwen' },
               
               // DeepSeek
               'deepseek-pro': { id: 'deepseek-v4-pro-0813', provider: 'qwen' },
